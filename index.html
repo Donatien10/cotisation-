@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tableau de Cotisation - Octobre</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f6f8fa;
+    margin: 40px;
+  }
+  h2 {
+    text-align: center;
+    color: #333;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th, td {
+    padding: 12px 15px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+  }
+  tr:hover {
+    background-color: #f1f1f1;
+  }
+  td {
+    font-size: 15px;
+    color: #333;
+  }
+  .nom {
+    font-weight: bold;
+    color: #007BFF;
+  }
+  .checkboxes {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 3px;
+  }
+  .checkboxes input[type="checkbox"] {
+    accent-color: #007BFF;
+    transform: scale(1.2);
+  }
+  .checkboxes label {
+    font-size: 12px;
+  }
+  .checkbox-cell {
+    min-width: 200px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Tableau de Cotisation - Octobre</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Nom</th>
+      <th>Montant par jour</th>
+      <th>Nombre total de jours</th>
+      <th>Total à payer</th>
+      <th>Montant payé</th>
+      <th>Montant restant dû</th>
+      <th>Jours déjà payés</th>
+      <th>Jours restants</th>
+      <th>Suivi (cases à cocher)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="nom">Donatien Kouakou</td>
+      <td>500 F</td>
+      <td>31</td>
+      <td>15 500 F</td>
+      <td>12 500 F</td>
+      <td><strong>3 000 F</strong></td>
+      <td>25</td>
+      <td>6</td>
+      <td class="checkbox-cell">
+        <div class="checkboxes" id="donatien">
+          <!-- Cases générées par JavaScript -->
+        </div>
+      </td>
+    </tr>
+    <tr>
+      <td class="nom">Kouassi Ahou Charlène</td>
+      <td>500 F</td>
+      <td>31</td>
+      <td>15 500 F</td>
+      <td>7000 F</td>
+      <td><strong>8 500F</strong></td>
+      <td>14</td>
+      <td>17</td>
+      <td class="checkbox-cell">
+        <div class="checkboxes" id="charlene">
+          <!-- Cases générées par JavaScript -->
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Firebase JS SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  // 🔹 Remplace par tes infos Firebase
+  const firebaseConfig = {
+    apiKey: "TON_API_KEY",
+    authDomain: "TON_PROJET.firebaseapp.com",
+    databaseURL: "https://TON_PROJET.firebaseio.com",
+    projectId: "TON_PROJET",
+    storageBucket: "TON_PROJET.appspot.com",
+    messagingSenderId: "TON_SENDER_ID",
+    appId: "TON_APP_ID"
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  // Fonction pour créer les cases à cocher et les synchroniser avec Firebase
+  function createCheckboxes(containerId, prefix) {
+    const container = document.getElementById(containerId);
+    for (let i = 1; i <= 31; i++) {
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.id = prefix + i;
+
+      const label = document.createElement('label');
+      label.htmlFor = checkbox.id;
+      label.innerText = i;
+
+      container.appendChild(checkbox);
+      container.appendChild(label);
+
+      // Écoute Firebase pour mise à jour automatique
+      db.ref('cases/' + checkbox.id).on('value', snapshot => {
+        checkbox.checked = snapshot.val() || false;
+      });
+
+      // Quand case cochée/décochée, envoie la valeur à Firebase
+      checkbox.addEventListener('change', () => {
+        db.ref('cases/' + checkbox.id).set(checkbox.checked);
+      });
+    }
+  }
+
+  // Création des cases pour Donatien et Charlène
+  createCheckboxes('donatien', 'd');
+  createCheckboxes('charlene', 'c');
+</script>
+
+</body>
+</html>
+
+</body>
+</html>
