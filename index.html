@@ -121,6 +121,39 @@
     </tr>
   </tbody>
 </table>
+<button id="saveBtn" style="margin:20px; padding:10px 20px; background-color:#007BFF; color:white; border:none; border-radius:5px; cursor:pointer;">Enregistrer</button>
+
+<script>
+  const saveBtn = document.getElementById('saveBtn');
+
+  saveBtn.addEventListener('click', () => {
+    const data = { donatien: {}, charlene: {} };
+
+    // Récupérer l'état des cases Donatien
+    for(let i=1;i<=31;i++){
+      const checkbox = document.getElementById('d'+i);
+      if(checkbox) data.donatien['d'+i] = checkbox.checked;
+    }
+
+    // Récupérer l'état des cases Charlène
+    for(let i=1;i<=31;i++){
+      const checkbox = document.getElementById('c'+i);
+      if(checkbox) data.charlene['c'+i] = checkbox.checked;
+    }
+
+    // Convertir en JSON
+    const jsonStr = JSON.stringify(data, null, 2);
+
+    // Créer un fichier et déclencher le téléchargement
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'cotisation_octobre.json';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+</script>
 
 <!-- Firebase JS SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
