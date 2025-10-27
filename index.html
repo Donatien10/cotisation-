@@ -1,12 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -73,6 +65,35 @@
 <body>
 
 <h2>Tableau de Cotisation - Octobre</h2>
+   <button id="savePdfBtn" style="margin:10px; padding:10px; background-color:#28a745; color:white; border:none; border-radius:5px; cursor:pointer;">Enregistrer en PDF</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script>
+document.getElementById('savePdfBtn').addEventListener('click', () => {
+    const element = document.querySelector('table');
+
+    // Appliquer un style temporaire pour réduire le tableau
+    element.style.zoom = "0.8"; // réduire à 80%
+    element.style.transform = "scale(0.8)";
+    element.style.transformOrigin = "top left";
+
+    html2pdf()
+        .set({
+            margin: [10, 10, 10, 10], // marge en mm
+            filename: 'cotisation_octobre.pdf',
+            html2canvas: { scale: 2, useCORS: true }, // scale plus élevé pour meilleure qualité
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'landscape' } // orientation paysage
+        })
+        .from(element)
+        .save()
+        .finally(() => {
+            // Rétablir le style après export
+            element.style.zoom = "1";
+            element.style.transform = "none";
+        });
+});
+</script>
 
 <table>
   <thead>
@@ -109,10 +130,10 @@
       <td>500 F</td>
       <td>31</td>
       <td>15 500 F</td>
-      <td>7000 F</td>
-      <td><strong>8 500F</strong></td>
-      <td>14</td>
+      <td>8 500 F</td>
+      <td><strong>7 000 F</strong></td>
       <td>17</td>
+      <td>14</td>
       <td class="checkbox-cell">
         <div class="checkboxes" id="charlene">
           <!-- Cases générées par JavaScript -->
@@ -121,39 +142,6 @@
     </tr>
   </tbody>
 </table>
-<button id="saveBtn" style="margin:20px; padding:10px 20px; background-color:#007BFF; color:white; border:none; border-radius:5px; cursor:pointer;">Enregistrer</button>
-
-<script>
-  const saveBtn = document.getElementById('saveBtn');
-
-  saveBtn.addEventListener('click', () => {
-    const data = { donatien: {}, charlene: {} };
-
-    // Récupérer l'état des cases Donatien
-    for(let i=1;i<=31;i++){
-      const checkbox = document.getElementById('d'+i);
-      if(checkbox) data.donatien['d'+i] = checkbox.checked;
-    }
-
-    // Récupérer l'état des cases Charlène
-    for(let i=1;i<=31;i++){
-      const checkbox = document.getElementById('c'+i);
-      if(checkbox) data.charlene['c'+i] = checkbox.checked;
-    }
-
-    // Convertir en JSON
-    const jsonStr = JSON.stringify(data, null, 2);
-
-    // Créer un fichier et déclencher le téléchargement
-    const blob = new Blob([jsonStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'cotisation_octobre.json';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-</script>
 
 <!-- Firebase JS SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -203,9 +191,6 @@
   createCheckboxes('donatien', 'd');
   createCheckboxes('charlene', 'c');
 </script>
-
-</body>
-</html>
 
 </body>
 </html>
